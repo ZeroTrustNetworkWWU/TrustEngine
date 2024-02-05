@@ -146,5 +146,5 @@ class TrustEngine:
 
 # Entry point
 if __name__ == "__main__":
-    engine = TrustEngine(host='0.0.0.0', port=5001, enforcerModel="src/trustEngine/enforcerModel.conf", accessEnforcer="src/trustEngine/AccessEnforcer.db", userDb="src/trustEngine/UserData.db")
+    engine = TrustEngine(host='0.0.0.0', port=5001, enforcerModel="enforcerModel.conf", accessEnforcer="AccessEnforcer.db", userDb="UserData.db")
     engine.run()
