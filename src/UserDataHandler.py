@@ -29,7 +29,7 @@ class UserDataHandler:
 
             # Create the needed tables if they don't exist
             cursor.execute("CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, role TEXT)")
-            cursor.execute("CREATE TABLE IF NOT EXISTS sessions (username TEXT, session TEXT, expiration TEXT)")
+            cursor.execute("CREATE TABLE IF NOT EXISTS sessions (username TEXT, session TEXT, expiration TEXT, ip_addr TEXT)")
 
             # Add the admin user if it doesn't exist TODO remove this
             if not self.userExists("user1"):
@@ -104,6 +104,12 @@ class UserDataHandler:
                 conn.commit()
 
         return True
+
+    def validateIP(self, session, requestIP):
+        with sqlite3.connect(self.dbName) as conn:
+            cursor = conn.cursor()
+            loginIP = cursor.execute("SELECT ip_addr FROM sessions WHERE session=?", (session,)).fetchone()[0]
+        return requestIP == loginIP
         
     def getSessionFromUser(self, user):
         if user is None:
@@ -118,7 +124,7 @@ class UserDataHandler:
 
         return session[0]
 
-    def getNewSessionToken(self, user):
+    def getNewSessionToken(self, user, ip_addr):
         # make sure the user is not already logged in if so 
         # logout the old session and create a new one
         session = self.getSessionFromUser(user)
@@ -133,7 +139,7 @@ class UserDataHandler:
         with sqlite3.connect(self.dbName) as conn:
             cursor = conn.cursor()
             cursor.execute("DELETE FROM sessions WHERE username=?", (user,))
-            cursor.execute("INSERT INTO sessions VALUES (?, ?, ?)", (user, token, expiration.strftime("%Y-%m-%d %H:%M:%S")))
+            cursor.execute("INSERT INTO sessions VALUES (?, ?, ?, ?)", (user, token, expiration.strftime("%Y-%m-%d %H:%M:%S"), ip_addr))
             conn.commit()
 
         return token

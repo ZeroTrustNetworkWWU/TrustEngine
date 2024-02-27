@@ -56,8 +56,10 @@ class TrustEngine:
                 raise InvalidLogin("Invalid login request")
 
             # TODO validate the request more rigurously
+	    if not TrustEngine.userDatabase.validateIP(session, data["ip"]):
+    	        raise IPAddressChange("Request has different IP from login")
 
-            session = TrustEngine.userDatabase.getNewSessionToken(data["user"])
+            session = TrustEngine.userDatabase.getNewSessionToken(data["user"], data["ip"])
             
             response_data["trustLevel"] = True
             response_data["session"] = session
@@ -66,6 +68,9 @@ class TrustEngine:
         
         except InvalidLogin as e:
             return jsonify(response_data), 200
+
+	except IPAddressChange as e:
+	    return jsonify(response_data), 200
 
     @app.route('/logout', methods=['POST'])
     def logout():

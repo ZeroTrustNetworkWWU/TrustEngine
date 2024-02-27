@@ -14,3 +14,6 @@ class InvalidRegistration(Exception):
     def __init__(self, message):
         super().__init__(message)
         
+class IPAddressChange(Exception)
+    def __init__(self, message):
+        super().__init__(message)
