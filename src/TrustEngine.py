@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from TrustEngineExceptions import MissingResourceAccess, UserNotFound, InvalidLogin, InvalidRegistration
+from TrustEngineExceptions import MissingResourceAccess, UserNotFound, InvalidLogin, InvalidRegistration, IPAddressChange
 from UserDataHandler import UserDataHandler
 from TrustEngineConfig import TrustEngineConfig
 
@@ -56,8 +56,8 @@ class TrustEngine:
                 raise InvalidLogin("Invalid login request")
 
             # TODO validate the request more rigurously
-	    if not TrustEngine.userDatabase.validateIP(session, data["ip"]):
-    	        raise IPAddressChange("Request has different IP from login")
+            if not TrustEngine.userDatabase.validateIP(session, data["ip"]):
+                raise IPAddressChange("Request has different IP from login")
 
             session = TrustEngine.userDatabase.getNewSessionToken(data["user"], data["ip"])
             
@@ -69,8 +69,8 @@ class TrustEngine:
         except InvalidLogin as e:
             return jsonify(response_data), 200
 
-	except IPAddressChange as e:
-	    return jsonify(response_data), 200
+        except IPAddressChange as e:
+            return jsonify(response_data), 200
 
     @app.route('/logout', methods=['POST'])
     def logout():
