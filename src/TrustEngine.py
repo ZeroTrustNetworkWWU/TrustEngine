@@ -33,6 +33,9 @@ class TrustEngine:
                 raise MissingResourceAccess("User does not have access to this resource")
 
             # TODO validate the request more rigurously
+            if not TrustEngine.userDatabase.validateIP(session, data["ip"]):
+                raise IPAddressChange("Request has different IP from login")
+                TrustEngine.userDatabase.removeSession(session)
 
             # Respond with the decision
             response_data["trustLevel"] = True
@@ -56,8 +59,6 @@ class TrustEngine:
                 raise InvalidLogin("Invalid login request")
 
             # TODO validate the request more rigurously
-            if not TrustEngine.userDatabase.validateIP(session, data["ip"]):
-                raise IPAddressChange("Request has different IP from login")
 
             session = TrustEngine.userDatabase.getNewSessionToken(data["user"], data["ip"])
             
