@@ -34,8 +34,8 @@ class TrustEngine:
 
             # TODO validate the request more rigurously
             if not TrustEngine.userDatabase.validateIP(session, data["ip"]):
-                raise IPAddressChange("Request has different IP from login")
                 TrustEngine.userDatabase.removeSession(session)
+                raise IPAddressChange("Request has different IP from login")
 
             # Respond with the decision
             response_data["trustLevel"] = True
