@@ -146,7 +146,7 @@ class TrustEngine:
 
     # Start the Flask app
     def run(self):
-        app.run(host=self.host, port=self.port, ssl_context=('cert.pem', 'key.pem'))
+        app.run(host=self.host, port=self.port)#, ssl_context=('cert.pem', 'key.pem'))
 
     
 
