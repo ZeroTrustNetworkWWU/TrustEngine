@@ -48,6 +48,8 @@ class TrustEngine:
             return jsonify(response_data), 200
         except InvalidLogin as e:
             return jsonify(response_data), 200
+        except IPAddressChange as e:
+            return jsonify(response_data), 200
         
     @app.route('/login', methods=['POST'])
     def login():
