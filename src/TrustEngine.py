@@ -114,13 +114,14 @@ class TrustEngine:
         except InvalidRegistration as e:
             return jsonify(response_data), 200
 
-    @app.route('/removeAccount', methods=['POST'])
+    @app.route('/removeAccount', methods=['PUT'])
     def removeAccount():
         pass
 
-    @app.route('/getRoles', methods=['POST'])
+    @app.route('/getRoles', methods=['GET'])
     def getRoles():
-        pass
+        print("Testing roles gathering...")
+        return {"test":1}, 200
 
     @app.route('/getUsers', methods=['POST'])
     def getUsers():
