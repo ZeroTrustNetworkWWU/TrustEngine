@@ -114,38 +114,44 @@ class TrustEngine:
         except InvalidRegistration as e:
             return jsonify(response_data), 200
 
+    # TODO: Change how this section works to make it as efficient as possible
+    #
+    # i.e.  When available, only send the difference between changes made and 
+    # what is currently loaded into the database.
+
     @app.route('/removeAccount', methods=['PUT'])
     def removeAccount():
         pass
 
     @app.route('/getRoles', methods=['GET'])
     def getRoles():
-        print("Testing roles gathering...")
-        return {"test":1}, 200
+        # recommended - create a separate file for this functionality, as well as other app.routes
+        # the name? how about TrustEngineAPI.py
+        return {"roles":1}, 200
 
-    @app.route('/getUsers', methods=['POST'])
+    @app.route('/getUsers', methods=['GET'])
     def getUsers():
-        pass
+        return {"users":1}, 200
 
-    @app.route('/getSessions', methods=['POST'])
+    @app.route('/getSessions', methods=['GET'])
     def getSessions():
         pass
 
     @app.route('/addRole', methods=['POST'])
     def addRole():
-        pass
+        return {"radd":1}, 200
 
-    @app.route('/removeRole', methods=['POST'])
+    @app.route('/removeRole', methods=['PUT'])
     def removeRole():
-        pass
+        return {"rrem":1}, 200
 
     @app.route('/addUser', methods=['POST'])
     def addUser():
-        pass
+        return {"uadd":1}, 200
 
-    @app.route('/removeUser', methods=['POST'])
+    @app.route('/removeUser', methods=['PUT'])
     def removeUser():
-        pass
+        return {"urem":1}, 200
 
     # Start the Flask app
     def run(self):
