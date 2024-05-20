@@ -159,14 +159,14 @@ class TrustEngine:
 
     @app.route('/removeUser', methods=['PUT'])
     def removeUser():
-        response_data = {"success": False}
+        response_data = {"status": "failure"}
         try:
             data = request.get_json()
 
             if not TrustEngine.userDatabase.removeUser(data):
                 raise InvalidRegistration("User does not exist")
 
-            response_data["success"] = True
+            response_data["status"] = "success"
             return jsonify(response_data), 200
 
         except InvalidRegistration as e:

@@ -178,11 +178,17 @@ class UserDataHandler:
 
         return usernames.fetchall()
     
-    def removeUser(self, username):
+    def removeUser(self, data):
+        username = data.get("user", None)
+        if username is None:
+            return False
+
         with sqlite3.connect(self.dbName) as conn:
             cursor = conn.cursor()
-            cursor.execute("DELETE FROM users WHERE user=?", (username,))
+            cursor.execute("DELETE FROM users WHERE username=?", (username,))
             conn.commit()
+
+        return True
 
     def getAllRoles(self):
         with sqlite3.connect(self.dbName) as conn:
