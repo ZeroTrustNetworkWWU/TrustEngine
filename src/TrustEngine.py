@@ -155,10 +155,23 @@ class TrustEngine:
 
     @app.route('/addUser', methods=['POST'])
     def addUser():
-        return {"uadd":1}, 200
+        return {"status":"deprecated"}, 200
 
     @app.route('/removeUser', methods=['PUT'])
     def removeUser():
+        response_data = {"success": False}
+        try:
+            data = request.get_json()
+
+            if not TrustEngine.userDatabase.removeUser(data):
+                raise InvalidRegistration("User does not exist")
+
+            response_data["success"] = True
+            return jsonify(response_data), 200
+
+        except InvalidRegistration as e:
+            return jsonify(response_data), 200
+
         return {"urem":1}, 200
 
     # Start the Flask app

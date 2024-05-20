@@ -177,6 +177,12 @@ class UserDataHandler:
             # should it be only "SELECT username, role" instead?
 
         return usernames.fetchall()
+    
+    def removeUser(self, username):
+        with sqlite3.connect(self.dbName) as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM users WHERE user=?", (username,))
+            conn.commit()
 
     def getAllRoles(self):
         with sqlite3.connect(self.dbName) as conn:
