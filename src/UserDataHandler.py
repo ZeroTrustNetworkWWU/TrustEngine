@@ -169,3 +169,10 @@ class UserDataHandler:
             cursor = conn.cursor()
             cursor.execute("DELETE FROM sessions WHERE session=?", (session,))
             conn.commit()
+
+    def getAllUsers(self):
+        with sqlite3.connect(self.dbName) as conn:
+            cursor = conn.cursor()
+            usernames = cursor.execute("SELECT * FROM users WHERE username IS NOT NULL")
+
+        return usernames.fetchall()

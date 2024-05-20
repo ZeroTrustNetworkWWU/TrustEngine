@@ -131,7 +131,12 @@ class TrustEngine:
 
     @app.route('/getUsers', methods=['GET'])
     def getUsers():
-        return {"users":1}, 200
+        users = TrustEngine.userDatabase.getAllUsers()
+        response_data = {"users": []}
+        for u in users:
+            response_data["users"].append({"user": u[0], "password": "PlaceholderPassword", "role": u[2]})
+
+        return jsonify(response_data), 200
 
     @app.route('/getSessions', methods=['GET'])
     def getSessions():
