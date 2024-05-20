@@ -174,5 +174,13 @@ class UserDataHandler:
         with sqlite3.connect(self.dbName) as conn:
             cursor = conn.cursor()
             usernames = cursor.execute("SELECT * FROM users WHERE username IS NOT NULL")
+            # should it be only "SELECT username, role" instead?
 
         return usernames.fetchall()
+
+    def getAllRoles(self):
+        with sqlite3.connect(self.dbName) as conn:
+            cursor = conn.cursor()
+            roles = cursor.execute("SELECT DISTINCT role FROM users WHERE role IS NOT NULL")
+
+        return roles.fetchall()

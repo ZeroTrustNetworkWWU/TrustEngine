@@ -125,9 +125,12 @@ class TrustEngine:
 
     @app.route('/getRoles', methods=['GET'])
     def getRoles():
-        # recommended - create a separate file for this functionality, as well as other app.routes
-        # the name? how about TrustEngineAPI.py
-        return {"roles":1}, 200
+        roles = TrustEngine.userDatabase.getAllRoles()
+        response_data = {"roles": []}
+        for r in roles:
+            response_data["roles"].append(r[0])
+
+        return jsonify(response_data), 200
 
     @app.route('/getUsers', methods=['GET'])
     def getUsers():
