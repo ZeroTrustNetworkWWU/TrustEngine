@@ -147,6 +147,8 @@ class TrustEngine:
 
     @app.route('/addRole', methods=['POST'])
     def addRole():
+        data = request.get_json()
+        TrustEngine.userDatabase.addRole(data)
         return {"radd":1}, 200
 
     @app.route('/removeRole', methods=['PUT'])
