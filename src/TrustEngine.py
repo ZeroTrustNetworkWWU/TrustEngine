@@ -128,7 +128,7 @@ class TrustEngine:
         roles = TrustEngine.userDatabase.getAllRoles()
         response_data = {"roles": []}
         for r in roles:
-            response_data["roles"].append(r[0])
+            response_data["roles"].append({"name": r[0], "routes": r[1], "types": r[2]})
 
         return jsonify(response_data), 200
 
@@ -148,12 +148,18 @@ class TrustEngine:
     @app.route('/addRole', methods=['POST'])
     def addRole():
         data = request.get_json()
-        TrustEngine.userDatabase.addRole(data)
-        return {"radd":1}, 200
+        response_data = {"status": "failure"}
+        if TrustEngine.userDatabase.addRole(data):
+            response_data["status"] = "success"
+        return jsonify(response_data), 200
 
     @app.route('/removeRole', methods=['PUT'])
     def removeRole():
-        return {"rrem":1}, 200
+        data = request.get_json()
+        response_data = {"status": "failure"}
+        if TrustEngine.userDatabase.removeRole(data):
+            response_data["status"] = "success"
+        return jsonify(response_data), 200
 
     @app.route('/addUser', methods=['POST'])
     def addUser():

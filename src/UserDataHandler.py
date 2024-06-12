@@ -191,28 +191,23 @@ class UserDataHandler:
         return True
 
     def getAllRoles(self):
-        with sqlite3.connect(self.dbName) as conn:
-            cursor = conn.cursor()
-            roles = cursor.execute("SELECT DISTINCT role FROM users WHERE role IS NOT NULL")
-            # ^ temporary implementation
 
-        return roles.fetchall()
+        return self.accessEnforcer.get_filtered_policy(0, "")
 
     def addRole(self, data):
         role = data.get("role", None)
-        
+        is_new = False
         if role is not None:
             print("Name: %s\nRoutes: %s\nTypes: %s" % (role["name"], role["routes"], role["types"]))
-            # self.accessEnforcer.add_policy(role["name"], role["routes"][0], role["types"][0])
-            # ^ I currently don't have a way to verify if that worked
-        return True
+            is_new = self.accessEnforcer.add_policy(role["name"], role["routes"][0], role["types"][0])
+        return is_new
     
     def removeRole(self, data):
-        role = data.get("name", None)
+        role = data.get("role", None)
         if role is None:
             return False
         
-        # self.accessEnforcer.remove_policy(role)
+        self.accessEnforcer.remove_policy(role["name"], role["routes"][0], role["types"][0])
         # should I update the database to replace users' role with default?
 
         return True
