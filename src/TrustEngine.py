@@ -97,6 +97,7 @@ class TrustEngine:
         except InvalidLogin as e:
             return jsonify(response_data), 200
 
+    @app.route('/addUser', methods=['POST'])
     @app.route('/register', methods=['POST'])
     def register():
         response_data = {"trustLevel": False}
@@ -161,9 +162,9 @@ class TrustEngine:
             response_data["status"] = "success"
         return jsonify(response_data), 200
 
-    @app.route('/addUser', methods=['POST'])
-    def addUser():
-        return {"status":"deprecated"}, 200
+
+    #def addUser():
+        #return {"status":"deprecated"}, 200
 
     @app.route('/removeUser', methods=['PUT'])
     def removeUser():
