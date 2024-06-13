@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from TrustEngineExceptions import MissingResourceAccess, UserNotFound, InvalidLogin, InvalidRegistration, IPAddressChange
 from UserDataHandler import UserDataHandler
 from TrustEngineConfig import TrustEngineConfig
+import sqlite3
 
 # Create a Flask app instance
 app = Flask(__name__)
@@ -149,7 +150,30 @@ class TrustEngine:
     # Start the Flask app
     def run(self):
         app.run(host=self.host, port=self.port)#, ssl_context=('cert.pem', 'key.pem'))
+    
+    @app.route('/log', methods=['POST'])
+    def log_entry():
+        data = request.json
+        timestamp = data.get('timestamp')
+        ip = data.get('ip')
+        user = data.get('user')
+        resource = data.get('resource')
+        action = data.get('action')
+        additional_info = data.get('additional_info')
 
+        try:
+            conn = sqlite3.connect('trust_engine_logs.db')
+            cursor = conn.cursor()
+            cursor.execute('''
+            INSERT INTO logs (timestamp, ip, user, resource, action, additional_info)
+            VALUES (?, ?, ?, ?, ?, ?)
+            ''', (timestamp, ip, user, resource, action, additional_info))
+            conn.commit()
+            conn.close()
+            return 'Log entry added', 200
+        except Exception as e:
+            print(f"Failed to log entry: {e}")
+            return 'Failed to log entry', 500
     
 
 # Entry point
