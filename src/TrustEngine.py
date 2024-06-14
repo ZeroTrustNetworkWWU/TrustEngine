@@ -163,8 +163,28 @@ class TrustEngine:
         return jsonify(response_data), 200
 
 
-    #def addUser():
-        #return {"status":"deprecated"}, 200
+    # def addUser():
+        # return {"status":"deprecated"}, 200
+
+    @app.route('/updateRoleList', methods=['POST'])
+    def updateRoleList():
+        data = request.get_json()
+        response_data = {"added": [], "deleted": [], "unchanged": []}
+        lists = TrustEngine.userDatabase.updateRoleList(data)
+        response_data["added"] = lists[0]
+        response_data["deleted"] = lists[1]
+        response_data["unchanged"] = lists[2]
+        return jsonify(response_data), 200
+
+    @app.route('/updateUserList', methods=['POST'])
+    def updateUserList():
+        data = request.get_json()
+        response_data = {"added": [], "deleted": [], "unchanged": []}
+        lists = TrustEngine.userDatabase.updateUserList(data)
+        response_data["added"] = lists[0]
+        response_data["deleted"] = lists[1]
+        response_data["unchanged"] = lists[2]
+        return jsonify(response_data), 200
 
     @app.route('/removeUser', methods=['PUT'])
     def removeUser():

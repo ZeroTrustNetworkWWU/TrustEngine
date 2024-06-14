@@ -190,6 +190,62 @@ class UserDataHandler:
 
         return True
 
+    def updateUserList(self, data):
+        new_list = data.get("users", None)
+        if new_list is None:
+            return None, None
+
+        userlist = self.getAllUsers()
+        
+        old_list = []
+        for u in userlist:
+            old_list.append({"user": u[0], "password": "PlaceholderPassword", "role": u[2]})
+        
+        # intersection
+        unchanged = [u for u in old_list if u in new_list]
+
+        deleted = []
+        for user in old_list:
+            if user not in new_list:
+                self.removeUser(user)
+                deleted.append(user)
+        
+        added = []
+        for user in new_list:
+            if user not in old_list:
+                self.registerUser(user)
+                added.append(user)
+
+        return added, deleted, unchanged
+
+    def updateRoleList(self, data):
+        new_list = data.get("roles", None)
+        if new_list is None:
+            return None, None
+
+        rolelist = self.getAllRoles()
+        
+        old_list = []
+        for r in rolelist:
+            old_list.append({"name": r[0], "routes": r[1], "types": r[2]})
+        
+        # intersection
+        unchanged = [r for r in old_list if r in new_list]
+
+        deleted = []
+        for role in old_list:
+            if role not in new_list:
+                self.accessEnforcer.remove_policy(role["name"], role["routes"][0], role["types"][0])
+                deleted.append(role)
+        
+        added = []
+        for role in new_list:
+            if role not in old_list:
+                self.accessEnforcer.add_policy(role["name"], role["routes"][0], role["types"][0])
+                added.append(role)
+
+        return added, deleted, unchanged
+
     def getAllRoles(self):
 
         return self.accessEnforcer.get_filtered_policy(0, "")
@@ -199,7 +255,7 @@ class UserDataHandler:
         is_new = False
         if role is not None:
             print("Name: %s\nRoutes: %s\nTypes: %s" % (role["name"], role["routes"], role["types"]))
-            is_new = self.accessEnforcer.add_policy(role["name"], role["routes"][0], role["types"][0])
+            is_new = self.accessEnforcer.add_policy(role["name"], role["routes"], role["types"])
         return is_new
     
     def removeRole(self, data):
