@@ -235,13 +235,13 @@ class UserDataHandler:
         deleted = []
         for role in old_list:
             if role not in new_list:
-                self.accessEnforcer.remove_policy(role["name"], role["routes"][0], role["types"][0])
+                self.accessEnforcer.remove_policy(role["name"], role["routes"], role["types"])
                 deleted.append(role)
         
         added = []
         for role in new_list:
             if role not in old_list:
-                self.accessEnforcer.add_policy(role["name"], role["routes"][0], role["types"][0])
+                self.accessEnforcer.add_policy(role["name"], role["routes"], role["types"])
                 added.append(role)
 
         return added, deleted, unchanged
@@ -254,7 +254,6 @@ class UserDataHandler:
         role = data.get("role", None)
         is_new = False
         if role is not None:
-            print("Name: %s\nRoutes: %s\nTypes: %s" % (role["name"], role["routes"], role["types"]))
             is_new = self.accessEnforcer.add_policy(role["name"], role["routes"], role["types"])
         return is_new
     
@@ -263,7 +262,7 @@ class UserDataHandler:
         if role is None:
             return False
         
-        self.accessEnforcer.remove_policy(role["name"], role["routes"][0], role["types"][0])
+        self.accessEnforcer.remove_policy(role["name"], role["routes"], role["types"])
         # should I update the database to replace users' role with default?
 
         return True
